@@ -3,9 +3,7 @@ package org.example;
 import org.example.javacore.stringbuilder.CustomStringBuilder;
 
 public class Main {
-    public static void main(String[] args) {
-        customStringBuilder();
-    }
+    public static void main(String[] args) {}
 
     private static void customStringBuilder() {
         CustomStringBuilder str = new CustomStringBuilder("Hello, World!");
