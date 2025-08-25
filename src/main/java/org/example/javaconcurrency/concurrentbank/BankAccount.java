@@ -1,13 +1,21 @@
 package org.example.javaconcurrency.concurrentbank;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BankAccount {
 
     private final AtomicInteger amount;
 
+    private final Lock lock = new ReentrantLock();
+
     public BankAccount(int amount) {
         this.amount = new AtomicInteger(amount);
+    }
+
+    public Lock getLock() {
+        return lock;
     }
 
     public void deposit(int amount) {
