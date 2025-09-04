@@ -1,5 +1,6 @@
 package org.example.exception;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -12,9 +13,9 @@ import java.time.Instant;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorResponse> handleAllOtherErrors(Exception ex) {
-        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Внутренняя ошибка сервера");
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNotFound(EntityNotFoundException ex) {
+        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -25,6 +26,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidationError(MethodArgumentNotValidException ex) {
         return buildErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY, "Ошибка валидации входных данных");
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleAllOtherErrors(Exception ex) {
+        return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Внутренняя ошибка сервера");
     }
 
     private ResponseEntity<ErrorResponse> buildErrorResponse(HttpStatus status, String message) {
