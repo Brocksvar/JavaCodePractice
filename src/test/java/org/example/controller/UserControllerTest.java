@@ -34,11 +34,18 @@ class UserControllerTest {
     private UserService userService;
 
     @Test
-    void testGetAllUsersSummaryView() throws Exception {
+    void testGetAllUsersSummaryView_HidesOrders() throws Exception {
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setName("Alex");
         user.setEmail("alex@test.com");
+
+        Order order = new Order();
+        order.setId(UUID.randomUUID());
+        order.setProducts(List.of("Book", "Pen"));
+        order.setCost(50.0);
+        order.setStatus("PAID");
+        user.setOrders(List.of(order));
 
         Mockito.when(userService.getAllUsers()).thenReturn(List.of(user));
 
@@ -51,16 +58,18 @@ class UserControllerTest {
     }
 
     @Test
-    void testGetUserDetailsView() throws Exception {
+    void testGetUserDetailsView_ShowsOrders() throws Exception {
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setName("Alex");
         user.setEmail("alex@test.com");
+
         Order order = new Order();
         order.setId(UUID.randomUUID());
         order.setProducts(List.of("Book", "Pen"));
         order.setCost(50.0);
         order.setStatus("PAID");
+
         user.setOrders(List.of(order));
 
         Mockito.when(userService.getUser(eq(user.getId()))).thenReturn(user);
