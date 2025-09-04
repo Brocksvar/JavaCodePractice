@@ -1,6 +1,9 @@
 package org.example.controller;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.example.dto.AuthorDto;
+import org.example.dto.BookDetailsDto;
+import org.example.dto.BookListDto;
 import org.example.entity.Book;
 import org.example.service.BookService;
 import org.springframework.data.domain.Page;
@@ -22,14 +25,34 @@ public class BookController {
     }
 
     @GetMapping
-    public Page<Book> getAllBooks(Pageable pageable) {
-        return bookService.getAllBooks(pageable);
+    public Page<BookListDto> getAllBooks(Pageable pageable) {
+        return bookService.getAllBooks(pageable)
+                .map(book -> new BookListDto(
+                        book.getId(),
+                        book.getTitle(),
+                        book.getGenre(),
+                        book.getYear()
+                ));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable UUID id) {
+    public ResponseEntity<BookDetailsDto> getBookById(@PathVariable UUID id) {
         try {
-            return ResponseEntity.ok(bookService.getBookById(id));
+            Book book = bookService.getBookById(id);
+
+            BookDetailsDto dto = new BookDetailsDto(
+                    book.getId(),
+                    book.getTitle(),
+                    book.getGenre(),
+                    book.getYear(),
+                    new AuthorDto(
+                            book.getAuthor().getId(),
+                            book.getAuthor().getName(),
+                            book.getAuthor().getBiography()
+                    )
+            );
+
+            return ResponseEntity.ok(dto);
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }

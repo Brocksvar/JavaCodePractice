@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(BookController.class)
-class BookControllerUnitTest {
+class BookControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -39,7 +39,7 @@ class BookControllerUnitTest {
     private final Author testAuthor = new Author("Автор", "Биография");
 
     @Test
-    void testGetAllBooks() throws Exception {
+    void testGetAllBooksSummaryView_HidesAuthors() throws Exception {
         Book book = new Book("Название", "Жанр", 2023, testAuthor);
         Page<Book> page = new PageImpl<>(List.of(book));
 
@@ -48,7 +48,10 @@ class BookControllerUnitTest {
         mockMvc.perform(get("/books?page=0&size=1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content", hasSize(1)))
-                .andExpect(jsonPath("$.content[0].title").value("Название"));
+                .andExpect(jsonPath("$.content[0].title").value("Название"))
+                .andExpect(jsonPath("$.content[0].genre").value("Жанр"))
+                .andExpect(jsonPath("$.content[0].year").value("2023"))
+                .andExpect(jsonPath("$.content[0].author").doesNotExist());
     }
 
     @Test
@@ -61,7 +64,11 @@ class BookControllerUnitTest {
 
         mockMvc.perform(get("/books/" + id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.title").value("Название"));
+                .andExpect(jsonPath("$.title").value("Название"))
+                .andExpect(jsonPath("$.genre").value("Жанр"))
+                .andExpect(jsonPath("$.year").value("2023"))
+                .andExpect(jsonPath("$.author.name").value("Автор"))
+                .andExpect(jsonPath("$.author.biography").value("Биография"));
     }
 
     @Test
