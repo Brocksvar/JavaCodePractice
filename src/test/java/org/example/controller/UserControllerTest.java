@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dto.UserDto;
 import org.example.entity.Order;
 import org.example.entity.User;
 import org.example.service.UserService;
@@ -47,7 +48,7 @@ class UserControllerTest {
         order.setStatus("PAID");
         user.setOrders(List.of(order));
 
-        Mockito.when(userService.getAllUsers()).thenReturn(List.of(user));
+        Mockito.when(userService.getAllUsers()).thenReturn(List.of(user.fromEntity()));
 
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
@@ -72,7 +73,7 @@ class UserControllerTest {
 
         user.setOrders(List.of(order));
 
-        Mockito.when(userService.getUser(eq(user.getId()))).thenReturn(user);
+        Mockito.when(userService.getUser(eq(user.getId()))).thenReturn(user.fromEntity());
 
         mockMvc.perform(get("/user/" + user.getId()))
                 .andExpect(status().isOk())
@@ -90,7 +91,7 @@ class UserControllerTest {
         user.setName("Alex");
         user.setEmail("alex@test.com");
 
-        Mockito.doNothing().when(userService).createUser(any(User.class));
+        Mockito.doNothing().when(userService).createUser(any(UserDto.class));
 
         mockMvc.perform(post("/user")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,7 +121,7 @@ class UserControllerTest {
         user.setName("Updated Name");
         user.setEmail("updated@test.com");
 
-        Mockito.doNothing().when(userService).updateUser(any(User.class));
+        Mockito.doNothing().when(userService).updateUser(any(UserDto.class));
 
         mockMvc.perform(put("/user")
                         .contentType(MediaType.APPLICATION_JSON)

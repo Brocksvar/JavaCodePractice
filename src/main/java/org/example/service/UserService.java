@@ -2,6 +2,7 @@ package org.example.service;
 
 import jakarta.validation.Valid;
 import org.example.dao.UserDao;
+import org.example.dto.UserDto;
 import org.example.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,20 +16,20 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    public List<User> getAllUsers() {
-        return userDao.findAll();
+    public List<UserDto> getAllUsers() {
+        return userDao.findAll().stream().map(User::fromEntity).toList();
     }
 
-    public User getUser(UUID userId) {
-        return userDao.findById(userId).orElseThrow();
+    public UserDto getUser(UUID userId) {
+        return userDao.findById(userId).orElseThrow().fromEntity();
     }
 
-    public void createUser(@Valid User user) {
-        userDao.save(user);
+    public void createUser(@Valid UserDto user) {
+        userDao.save(user.toEntity());
     }
 
-    public void updateUser(@Valid User user) {
-        userDao.save(user);
+    public void updateUser(@Valid UserDto user) {
+        userDao.save(user.toEntity());
     }
 
     public void deleteUser(UUID userId) {

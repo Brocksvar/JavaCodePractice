@@ -1,28 +1,14 @@
-package org.example.entity;
+package org.example.dto;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import org.example.dto.OrderDto;
-import org.example.view.Views;
+import org.example.entity.Order;
 
 import java.util.List;
 import java.util.UUID;
 
-@Entity
-@Table(name = "order")
-public class Order {
-
-    @JsonView(Views.UserDetails.class)
+public class OrderDto {
     private UUID id;
-
-    @JsonView(Views.UserDetails.class)
     private List<String> products;
-
-    @JsonView(Views.UserDetails.class)
     private Double cost;
-
-    @JsonView(Views.UserDetails.class)
     private String status;
 
     public UUID getId() {
@@ -57,12 +43,12 @@ public class Order {
         this.status = status;
     }
 
-    public OrderDto fromEntity() {
-        OrderDto dto = new OrderDto();
-        dto.setId(this.getId());
-        dto.setProducts(this.getProducts());
-        dto.setCost(this.getCost());
-        dto.setStatus(this.getStatus());
-        return dto;
+    public Order toEntity() {
+        Order order = new Order();
+        order.setId(this.id);
+        order.setProducts(this.products);
+        order.setCost(this.cost);
+        order.setStatus(this.status);
+        return order;
     }
 }

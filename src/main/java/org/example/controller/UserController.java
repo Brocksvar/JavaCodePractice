@@ -2,6 +2,7 @@ package org.example.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import jakarta.validation.Valid;
+import org.example.dto.UserDto;
 import org.example.entity.User;
 import org.example.service.UserService;
 import org.example.view.Views;
@@ -21,24 +22,24 @@ public class UserController {
 
     @GetMapping("/users")
     @JsonView(Views.UserSummary.class)
-    public ResponseEntity<List<User>> gelAllUsers() {
+    public ResponseEntity<List<UserDto>> gelAllUsers() {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
     @GetMapping("/user/{userId}")
     @JsonView(Views.UserDetails.class)
-    public ResponseEntity<User> getUser(@PathVariable UUID userId) {
+    public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
         return ResponseEntity.ok(userService.getUser(userId));
     }
 
     @PostMapping("/user")
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto user) {
         userService.createUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
     }
 
     @PutMapping("/user")
-    public ResponseEntity<Void> updateUser(@Valid @RequestBody User user) {
+    public ResponseEntity<Void> updateUser(@Valid @RequestBody UserDto user) {
         userService.updateUser(user);
         return ResponseEntity.ok().build();
     }
