@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dto.ProductDto;
 import org.example.entity.Product;
 import org.example.service.ProductService;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class ProductControllerTest {
         p2.setName("Товар 2");
         p2.setPrice(200.0);
 
-        when(productService.getAllProducts()).thenReturn(List.of(p1, p2));
+        when(productService.getAllProducts()).thenReturn(List.of(p1.mapToProductDto(), p2.mapToProductDto()));
 
         mockMvc.perform(get("/api/products"))
                 .andExpect(status().isOk())
@@ -64,7 +65,7 @@ class ProductControllerTest {
         p.setName("Товар 1");
         p.setPrice(150.0);
 
-        when(productService.getProductById(id)).thenReturn(p);
+        when(productService.getProductById(id)).thenReturn(p.mapToProductDto());
 
         mockMvc.perform(get("/api/products/" + id))
                 .andExpect(status().isOk())
@@ -84,7 +85,7 @@ class ProductControllerTest {
 
         String requestJson = objectMapper.writeValueAsString(p);
 
-        when(productService.createProduct(any(Product.class))).thenReturn(p);
+        when(productService.createProduct(any(ProductDto.class))).thenReturn(p.mapToProductDto());
 
         mockMvc.perform(post("/api/products")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -106,7 +107,7 @@ class ProductControllerTest {
 
         String requestJson = objectMapper.writeValueAsString(p);
 
-        when(productService.updateProduct(any(UUID.class), any(Product.class))).thenReturn(p);
+        when(productService.updateProduct(any(UUID.class), any(ProductDto.class))).thenReturn(p.mapToProductDto());
 
         mockMvc.perform(put("/api/products/" + id)
                         .contentType(MediaType.APPLICATION_JSON)

@@ -3,6 +3,7 @@ package org.example.service;
 import org.example.dao.CustomerRepository;
 import org.example.dao.OrderRepository;
 import org.example.dao.ProductRepository;
+import org.example.dto.OrderDto;
 import org.example.entity.Customer;
 import org.example.entity.Order;
 import org.example.entity.Product;
@@ -28,7 +29,8 @@ public class OrderService {
         this.customerRepository = customerRepository;
     }
 
-    public Order createOrder(Order orderRequest) {
+    public OrderDto createOrder(OrderDto orderRequestDto) {
+        Order orderRequest = orderRequestDto.mapToOrder();
         Customer customer = customerRepository.save(orderRequest.getCustomer());
 
         List<Product> products = productRepository.findAllById(
@@ -47,11 +49,12 @@ public class OrderService {
         order.setTotalPrice(totalPrice);
         order.setOrderStatus(OrderStatus.NEW);
 
-        return orderRepository.save(order);
+        return orderRepository.save(order).mapToOrderDto();
     }
 
-    public Order getOrderById(UUID id) {
+    public OrderDto getOrderById(UUID id) {
         return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Заказ с id=" + id + " не найден"));
+                .orElseThrow(() -> new RuntimeException("Заказ с id=" + id + " не найден"))
+                .mapToOrderDto();
     }
 }

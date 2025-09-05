@@ -8,6 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import org.example.dto.CustomerDto;
+import org.example.dto.OrderDto;
 
 import java.util.UUID;
 
@@ -70,5 +72,15 @@ public class Customer {
 
     public void setContactNumber(String contactNumber) {
         this.contactNumber = contactNumber;
+    }
+
+    public CustomerDto mapToCustomerDto() {
+        return new CustomerDto(
+                this.customerId,
+                this.firstName,
+                this.lastName,
+                this.email,
+                this.contactNumber
+        );
     }
 }

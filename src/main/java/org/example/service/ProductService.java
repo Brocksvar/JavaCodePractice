@@ -1,6 +1,7 @@
 package org.example.service;
 
 import org.example.dao.ProductRepository;
+import org.example.dto.ProductDto;
 import org.example.entity.Product;
 import org.springframework.stereotype.Service;
 
@@ -16,27 +17,29 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductDto> getAllProducts() {
+        return productRepository.findAll().stream().map(Product::mapToProductDto).toList();
     }
 
-    public Product getProductById(UUID id) {
+    public ProductDto getProductById(UUID id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Продукт с id=" + id + " не найден"));
+                .orElseThrow(() -> new RuntimeException("Продукт с id=" + id + " не найден"))
+                .mapToProductDto();
     }
 
-    public Product createProduct(Product product) {
-        return productRepository.save(product);
+    public ProductDto createProduct(ProductDto product) {
+        return productRepository.save(product.mapToProduct()).mapToProductDto();
     }
 
-    public Product updateProduct(UUID id, Product updatedProduct) {
+    public ProductDto updateProduct(UUID id, ProductDto updatedProductDto) {
+        Product updatedProduct = updatedProductDto.mapToProduct();
         return productRepository.findById(id)
                 .map(existing -> {
                     existing.setName(updatedProduct.getName());
                     existing.setDescription(updatedProduct.getDescription());
                     existing.setPrice(updatedProduct.getPrice());
                     existing.setQuantityInStock(updatedProduct.getQuantityInStock());
-                    return productRepository.save(existing);
+                    return productRepository.save(existing).mapToProductDto();
                 })
                 .orElseThrow(() -> new RuntimeException("Продукт с id=" + id + " не найден"));
     }

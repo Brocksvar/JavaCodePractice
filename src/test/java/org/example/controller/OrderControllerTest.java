@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.dto.OrderDto;
 import org.example.entity.Customer;
 import org.example.entity.Order;
 import org.example.entity.Product;
@@ -84,7 +85,7 @@ class OrderControllerTest {
         savedOrder.setTotalPrice(300.0);
         savedOrder.setOrderStatus(OrderStatus.NEW);
 
-        when(orderService.createOrder(any(Order.class))).thenReturn(savedOrder);
+        when(orderService.createOrder(any(OrderDto.class))).thenReturn(savedOrder.mapToOrderDto());
 
         mockMvc.perform(post("/api/orders")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -124,7 +125,7 @@ class OrderControllerTest {
         order.setTotalPrice(500.0);
         order.setOrderStatus(OrderStatus.PROCESSING);
 
-        when(orderService.getOrderById(orderId)).thenReturn(order);
+        when(orderService.getOrderById(orderId)).thenReturn(order.mapToOrderDto());
 
         mockMvc.perform(get("/api/orders/" + orderId))
                 .andExpect(status().isOk())

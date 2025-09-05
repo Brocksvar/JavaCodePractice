@@ -3,6 +3,7 @@ package org.example.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import org.example.dto.ProductDto;
 import org.example.entity.Product;
 import org.example.service.ProductService;
 import org.springframework.http.MediaType;
@@ -26,7 +27,7 @@ public class ProductController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getAllProducts() throws Exception {
-        List<Product> products = productService.getAllProducts();
+        List<ProductDto> products = productService.getAllProducts();
         String json = objectMapper.writeValueAsString(products);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -35,7 +36,7 @@ public class ProductController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getProductById(@PathVariable UUID id) throws Exception {
-        Product product = productService.getProductById(id);
+        ProductDto product = productService.getProductById(id);
         String json = objectMapper.writeValueAsString(product);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -44,8 +45,8 @@ public class ProductController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createProduct(@RequestBody String json) throws Exception {
-        Product product = objectMapper.readValue(json, Product.class);
-        Product created = productService.createProduct(product);
+        ProductDto product = objectMapper.readValue(json, ProductDto.class);
+        ProductDto created = productService.createProduct(product);
         String responseJson = objectMapper.writeValueAsString(created);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -55,8 +56,8 @@ public class ProductController {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> updateProduct(@PathVariable UUID id,
                                                 @RequestBody String json) throws Exception {
-        Product updatedProduct = objectMapper.readValue(json, Product.class);
-        Product result = productService.updateProduct(id, updatedProduct);
+        ProductDto updatedProduct = objectMapper.readValue(json, ProductDto.class);
+        ProductDto result = productService.updateProduct(id, updatedProduct);
         String responseJson = objectMapper.writeValueAsString(result);
         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON)

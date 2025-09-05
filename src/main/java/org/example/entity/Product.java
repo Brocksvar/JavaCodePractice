@@ -7,6 +7,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import org.example.dto.ProductDto;
 
 import java.util.UUID;
 
@@ -67,5 +68,15 @@ public class Product {
 
     public void setQuantityInStock(Integer quantityInStock) {
         this.quantityInStock = quantityInStock;
+    }
+
+    public ProductDto mapToProductDto() {
+        return new ProductDto(
+                this.productId,
+                this.name,
+                this.description,
+                this.price,
+                this.quantityInStock
+        );
     }
 }

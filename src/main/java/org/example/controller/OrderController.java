@@ -3,6 +3,7 @@ package org.example.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import org.example.dto.OrderDto;
 import org.example.entity.Order;
 import org.example.service.OrderService;
 import org.springframework.http.MediaType;
@@ -30,9 +31,9 @@ public class OrderController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> createOrder(@RequestBody String json) throws Exception {
-        Order order = objectMapper.readValue(json, Order.class);
+        OrderDto order = objectMapper.readValue(json, OrderDto.class);
 
-        Order created = orderService.createOrder(order);
+        OrderDto created = orderService.createOrder(order);
 
         String responseJson = objectMapper.writeValueAsString(created);
 
@@ -43,7 +44,7 @@ public class OrderController {
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<String> getOrderById(@PathVariable UUID id) throws Exception {
-        Order order = orderService.getOrderById(id);
+        OrderDto order = orderService.getOrderById(id);
 
         String responseJson = objectMapper.writeValueAsString(order);
 

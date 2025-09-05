@@ -11,6 +11,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.example.dto.OrderDto;
 import org.example.enums.OrderStatus;
 
 import java.time.LocalDateTime;
@@ -100,5 +101,17 @@ public class Order {
 
     public void setOrderStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+    }
+
+    public OrderDto mapToOrderDto() {
+        return new OrderDto(
+                this.orderId,
+                this.customer.mapToCustomerDto(),
+                this.products.stream().map(Product::mapToProductDto).toList(),
+                this.orderDate,
+                this.shippingAddress,
+                this.totalPrice,
+                this.orderStatus
+        );
     }
 }
