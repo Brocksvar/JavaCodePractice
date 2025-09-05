@@ -1,5 +1,6 @@
 package org.example.entity;
 
+import org.example.dto.BookDto;
 import org.springframework.data.annotation.Id;
 
 import java.util.UUID;
@@ -53,5 +54,14 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public BookDto mapToBookDto() {
+        return new BookDto(
+                this.id,
+                this.title,
+                this.author,
+                this.publicationYear
+        );
     }
 }

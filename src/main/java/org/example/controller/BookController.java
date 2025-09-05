@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.dto.BookDto;
 import org.example.entity.Book;
 import org.example.service.BookService;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBookById(@PathVariable UUID id) {
+    public ResponseEntity<BookDto> getBookById(@PathVariable UUID id) {
         try {
             return ResponseEntity.ok(bookService.getBookById(id));
         } catch (IllegalArgumentException e) {
@@ -28,13 +29,13 @@ public class BookController {
     }
 
     @PostMapping
-    public ResponseEntity<Book> createBook(@RequestBody Book book) {
-        Book savedBook = bookService.createBook(book);
+    public ResponseEntity<BookDto> createBook(@RequestBody Book book) {
+        BookDto savedBook = bookService.createBook(book);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedBook);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Book> updateBook(@PathVariable UUID id, @RequestBody Book updatedBook) {
+    public ResponseEntity<BookDto> updateBook(@PathVariable UUID id, @RequestBody Book updatedBook) {
         try {
             return ResponseEntity.ok(bookService.updateBook(id, updatedBook));
         } catch (IllegalArgumentException e) {
