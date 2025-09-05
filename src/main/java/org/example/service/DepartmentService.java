@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.dto.DepartmentDto;
 import org.example.entity.Department;
 import org.example.repository.DepartmentRepository;
 import org.springframework.stereotype.Service;
@@ -17,23 +18,27 @@ public class DepartmentService {
         this.departmentRepository = departmentRepository;
     }
 
-    public List<Department> getAllDepartments() {
-        return departmentRepository.findAll();
+    public List<DepartmentDto> getAllDepartments() {
+        return departmentRepository.findAll().stream()
+                .map(Department::mapToDepartmentDto)
+                .toList();
     }
 
-    public Optional<Department> getDepartmentById(UUID id) {
-        return departmentRepository.findById(id);
+    public DepartmentDto getDepartmentById(UUID id) {
+        return departmentRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Department not found"))
+                .mapToDepartmentDto();
     }
 
-    public Department createDepartment(Department department) {
-        return departmentRepository.save(department);
+    public DepartmentDto createDepartment(Department department) {
+        return departmentRepository.save(department).mapToDepartmentDto();
     }
 
-    public Department updateDepartment(UUID id, Department departmentDetails) {
+    public DepartmentDto updateDepartment(UUID id, Department departmentDetails) {
         return departmentRepository.findById(id)
                 .map(department -> {
                     department.setName(departmentDetails.getName());
-                    return departmentRepository.save(department);
+                    return departmentRepository.save(department).mapToDepartmentDto();
                 })
                 .orElseThrow(() -> new RuntimeException("Department not found"));
     }

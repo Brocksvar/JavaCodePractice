@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.dto.EmployeeDto;
 import org.example.entity.Department;
 import org.example.entity.Employee;
 import org.example.projections.EmployeeProjection;
@@ -56,7 +57,7 @@ class EmployeeServiceIntegrationTest {
 
     @Test
     void testGetAllEmployees() {
-        List<Employee> employees = employeeService.getAllEmployees();
+        List<EmployeeDto> employees = employeeService.getAllEmployees();
         assertThat(employees).hasSize(2);
     }
 
@@ -80,13 +81,13 @@ class EmployeeServiceIntegrationTest {
         newEmployee.setSalary(1200.0);
         newEmployee.setDepartment(department);
 
-        Employee saved = employeeService.createEmployee(newEmployee);
-        assertThat(saved.getId()).isNotNull();
+        EmployeeDto saved = employeeService.createEmployee(newEmployee);
+        assertThat(saved.id()).isNotNull();
 
-        List<Employee> all = employeeService.getAllEmployees();
+        List<EmployeeDto> all = employeeService.getAllEmployees();
         assertThat(all).hasSize(3);
 
-        employeeService.deleteEmployee(saved.getId());
+        employeeService.deleteEmployee(saved.id());
         assertThat(employeeService.getAllEmployees()).hasSize(2);
     }
 }

@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.dto.EmployeeDto;
 import org.example.entity.Employee;
 import org.example.projections.EmployeeProjection;
 import org.example.service.EmployeeService;
@@ -26,23 +27,22 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable UUID id) {
-        return employeeService.getEmployeeById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found"));
+    public EmployeeDto getEmployeeById(@PathVariable UUID id) {
+        return employeeService.getEmployeeById(id);
     }
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
+    public EmployeeDto createEmployee(@RequestBody Employee employee) {
         return employeeService.createEmployee(employee);
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable UUID id, @RequestBody Employee employee) {
+    public EmployeeDto updateEmployee(@PathVariable UUID id, @RequestBody Employee employee) {
         return employeeService.updateEmployee(id, employee);
     }
 

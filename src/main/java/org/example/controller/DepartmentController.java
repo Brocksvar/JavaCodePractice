@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.dto.DepartmentDto;
 import org.example.entity.Department;
 import org.example.service.DepartmentService;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,23 +26,22 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public List<Department> getAllDepartments() {
+    public List<DepartmentDto> getAllDepartments() {
         return departmentService.getAllDepartments();
     }
 
     @GetMapping("/{id}")
-    public Department getDepartmentById(@PathVariable UUID id) {
-        return departmentService.getDepartmentById(id)
-                .orElseThrow(() -> new RuntimeException("Department not found"));
+    public DepartmentDto getDepartmentById(@PathVariable UUID id) {
+        return departmentService.getDepartmentById(id);
     }
 
     @PostMapping
-    public Department createDepartment(@RequestBody Department department) {
+    public DepartmentDto createDepartment(@RequestBody Department department) {
         return departmentService.createDepartment(department);
     }
 
     @PutMapping("/{id}")
-    public Department updateDepartment(@PathVariable UUID id, @RequestBody Department department) {
+    public DepartmentDto updateDepartment(@PathVariable UUID id, @RequestBody Department department) {
         return departmentService.updateDepartment(id, department);
     }
 

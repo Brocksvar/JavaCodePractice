@@ -8,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.example.dto.EmployeeDto;
 
 import java.util.UUID;
 
@@ -93,5 +94,16 @@ public class Employee {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    public EmployeeDto mapToEmployeeDto() {
+        return new EmployeeDto(
+                this.id,
+                this.firstName,
+                this.lastName,
+                this.position,
+                this.salary,
+                this.department.mapToDepartmentDto()
+        );
     }
 }

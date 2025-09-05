@@ -5,6 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.example.dto.DepartmentDto;
 
 import java.util.UUID;
 
@@ -41,5 +42,12 @@ public class Department {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public DepartmentDto mapToDepartmentDto() {
+        return new DepartmentDto(
+                this.id,
+                this.name
+        );
     }
 }
