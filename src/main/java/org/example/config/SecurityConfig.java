@@ -1,38 +1,61 @@
 package org.example.config;
 
+import org.example.service.CustomLogoutSuccessHandler;
+import org.example.service.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
+
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final CustomLogoutSuccessHandler logoutSuccessHandler;
+
+    public SecurityConfig(CustomOAuth2UserService customOAuth2UserService,
+                          CustomLogoutSuccessHandler logoutSuccessHandler) {
+        this.customOAuth2UserService = customOAuth2UserService;
+        this.logoutSuccessHandler = logoutSuccessHandler;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/home").permitAll()
+                        .requestMatchers("/", "/login", "/error").permitAll()
+                        .requestMatchers("/public/**").permitAll()
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
-                .formLogin(Customizer.withDefaults());
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED))
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpStatus.FORBIDDEN.value());
+                            response.getWriter().write("{\"error\": \"Access denied\"}");
+                        })
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/")
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .defaultSuccessUrl("/user/profile")
+                        .failureUrl("/login?error=true")
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(logoutSuccessHandler)
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
+                );
+
         return http.build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        var userDetailsManager = new InMemoryUserDetailsManager();
-
-        UserDetails admin = User.withUsername("admin")
-                .password("{noop}admin")
-                .roles("ADMIN")
-                .build();
-        userDetailsManager.createUser(admin);
-        return userDetailsManager;
     }
 }
