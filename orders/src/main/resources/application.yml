@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: orders
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      retries: 5
+      properties:
+        retry.backoff.ms: 200
+        delivery.timeout.ms: 60000
+
+server:
+  port: 8081
+
+kafka:
+  topics:
+    new-orders-topic: new_orders
+    payed-orders-topic: payed_orders
+    sent-orders-topic: sent_orders
+    partition-count: 3
